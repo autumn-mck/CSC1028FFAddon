@@ -1,0 +1,28 @@
+{
+	"manifest_version": 2,
+	"name": "__MSG_extensionName__",
+	"description": "__MSG_extensionDescription__",
+	"version": "0.0.1",
+	"icons": {
+		"64": "icons/icon.png"
+	},
+	"permissions": ["<all_urls>", "tabs", "notifications", "storage"],
+
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"default_locale": "en",
+
+	"browser_action": {
+		"default_icon": "icons/icon.png",
+		"theme_icons": [
+			{
+				"light": "icons/icon.png",
+				"dark": "icons/icon.png",
+				"size": 32
+			}
+		],
+		"default_title": "URL Info",
+		"default_popup": "popup/urlInfo.html"
+	}
+}
