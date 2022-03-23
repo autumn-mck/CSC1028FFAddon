@@ -1,21 +1,25 @@
 var tabUrl;
+// The URL where the API is hosted
 const apiUrl = "http://localhost";
 
 function tabChangedListener(activeInfo) {
 	// TODO: Does not cover switching windows? Look into how seperate windows works.
 	console.log("\n\n\nTab switched!");
 	let tabId = activeInfo.tabId;
+	// Ignore browser tabs like about:config, etc
 	if (tabId === browser.tabs.TAB_ID_NONE) {
 		console.log("Ignoring tab that is not browser tab!");
 		return;
 	}
+
+	// Get the tab from its tab ID
 	let tab = browser.tabs.get(tabId);
 	tab.then(onTabSwitch, onError);
 }
 
 async function onTabSwitch(tabInfo) {
+	// If the tab does not yet have a URL or does not have a hostname, for whatever reason, ignore it.
 	let url = tryParseUrl(tabInfo.url);
-
 	if (!url || !url.hostname) {
 		return;
 	}
@@ -24,106 +28,77 @@ async function onTabSwitch(tabInfo) {
 
 	tabUrl = url;
 
+	// Query the details for the hostname
 	checkHostname(url.hostname);
-	//checkDataForUrl(url);
 }
 
-async function checkDataForUrl(url) {
-	browser.storage.local.get(url.hostname + url.pathname).then(checkLocalData, onError);
-}
-
+/**
+ * Query and cache data for the given hostname
+ */
 async function checkHostname(hostname) {
+	// Check the data has not already been cached
 	browser.storage.local.get(hostname).then(async function (item) {
 		if (Object.keys(item).length) {
+			// If the data is already cached, it doesn't need to be fetched again
+			// TODO: Should cache expire after a while?
 			let data = item[hostname];
 			hasHostnameData(data);
 		} else {
+			// Fetch the data
 			let data = await fetchExtHostnameData(hostname);
+			// Cache the data
 			let storage = { [hostname]: data };
 			browser.storage.local.set(storage);
+
 			hasHostnameData(data);
 		}
 	}, onError);
 }
 
+/**
+ * Fetch the data
+ */
 async function fetchExtHostnameData(hostname) {
 	let similarweb,
 		dnsLookup,
-		phishingData = await Promise.all([
+		phishingData,
+		archiveDate,
+		subdomains,
+		stackshare = await Promise.all([
 			queryUrl(`${apiUrl}:10130/${hostname}`),
 			queryUrl(`${apiUrl}:10131/${hostname}`),
 			queryUrl(`${apiUrl}:10132/${hostname}`),
+			queryUrl(`${apiUrl}:10133/${hostname}`),
+			queryUrl(`${apiUrl}:10135/${hostname}`),
+			queryUrl(`${apiUrl}:10136/${hostname}`),
 		]);
 	return {
 		similarweb: similarweb,
 		dns: dnsLookup,
 		phishingData: phishingData,
+		archiveDate: archiveDate,
+		subdomains: subdomains,
+		stackshare: stackshare,
 	};
 }
 
 async function hasHostnameData(data) {
-	// Do what?
+	// Do what? Update icon/show notification if malware or something?
 }
 
+/**
+ * Fetch JSON from the given URL
+ */
 async function queryUrl(url) {
 	console.log(`About to request ${url}.`);
 
-	let res = await fetchAsync(url);
-	console.log(res);
-	return res;
-}
-
-function checkLocalData(item) {
-	if (Object.keys(item).length) hasLocalData(item);
-	else fetchRemoteData();
-}
-
-async function hasLocalData(item) {
-	console.log("Got local data!");
-	let url = tabUrl;
-	let urlStr = url.hostname + url.pathname;
-	let data = item[urlStr];
+	// Fetch the URL
+	let res = await fetch(url);
+	// Parse the JSON
+	let data = await res.json();
 	console.log(data);
-
-	let title = browser.i18n.getMessage("notificationTitle");
-	let content = browser.i18n.getMessage("notificationContent", data.host);
-
-	browser.notifications.create({
-		type: "basic",
-		iconUrl: browser.extension.getURL("icons/icon.png"),
-		title: title,
-		message: content,
-	});
-}
-
-async function fetchRemoteData() {
-	console.log("No local data found!");
-
-	let url = tabUrl;
-	let urlStr = url.hostname + url.pathname;
-	try {
-		let req = "http://localhost:8080?url=" + urlStr;
-
-		console.log(`About to request ${req}.`);
-		let res = await fetchAsync(req);
-		console.log(res);
-
-		let storage = { [urlStr]: res };
-		console.log("About to store data...");
-		console.log(storage);
-		browser.storage.local.set(storage);
-
-		let title = browser.i18n.getMessage("notificationTitle");
-		let content = browser.i18n.getMessage("notificationContent", urlStr);
-		browser.notifications.create({
-			type: "basic",
-			iconUrl: browser.extension.getURL("icons/icon.png"),
-			title: title,
-			message: content,
-		});
-	} catch (ex) {
-		console.log(ex);
-	}
+	// Return the data
+	return data;
 }
 
 /**
@@ -137,12 +112,6 @@ function tryParseUrl(urlStr) {
 	} catch {
 		return null;
 	}
-}
-
-async function fetchAsync(url) {
-	let response = await fetch(url);
-	let data = await response.json();
-	return data;
 }
 
 async function onError(error) {
