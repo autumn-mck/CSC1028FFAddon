@@ -4,6 +4,7 @@
 	--text: #e8e6e3;
 	--border: #a0988b;
 	--accent: #58a8e1;
+	--accent-bg: #20232c;
 }
 
 /* Add a bit of transparancy so images aren't as bright */
@@ -71,7 +72,7 @@ nav a.current {
 
 /* Reduce nav size on mobile */
 @media only screen and (max-width: 750px) {
-	body > header p {
+	body > .header p {
 		margin: 0rem auto;
 	}
 
@@ -124,4 +125,256 @@ a:visited {
 
 a:hover {
 	text-decoration: none;
+}
+
+/* Format tables */
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 1.5rem 0;
+}
+
+td,
+th {
+	border: 1px solid var(--border);
+	text-align: left;
+	padding: 0.5rem;
+}
+
+th {
+	background: var(--accent-bg);
+	font-weight: bold;
+}
+
+tr:nth-child(even) {
+	/* Set every other cell slightly darker. Improves readability. */
+	background: var(--accent-bg);
+}
+
+table caption {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+@media only screen and (max-width: 1200px) {
+	.row {
+		display: inline;
+		align-items: unset;
+	}
+
+	.column {
+		width: min(70ch, 87%);
+		margin: 0 auto;
+		float: unset;
+	}
+}
+
+/* Format forms */
+textarea,
+select,
+input {
+	font-size: inherit;
+	font-family: inherit;
+	padding: 0.5rem;
+	margin-bottom: 0.5rem;
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: 5px;
+	box-shadow: none;
+	box-sizing: border-box;
+	width: 60%;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* Add arrow to drop-down */
+select {
+	background-image: linear-gradient(45deg, transparent 49%, var(--text) 51%), linear-gradient(135deg, var(--text) 51%, transparent 49%);
+	background-position: calc(100% - 20px), calc(100% - 15px);
+	background-size: 5px 5px, 5px 5px;
+	background-repeat: no-repeat;
+}
+
+select[multiple] {
+	background-image: none !important;
+}
+
+/* checkbox and radio button style */
+input[type="checkbox"],
+input[type="radio"] {
+	vertical-align: bottom;
+	position: relative;
+}
+
+input[type="radio"] {
+	border-radius: 100%;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+	background: var(--accent);
+}
+
+input[type="checkbox"]:checked::after {
+	/* Creates a rectangle with colored right and bottom borders which is rotated to look like a check mark */
+	content: " ";
+	width: 0.1em;
+	height: 0.25em;
+	border-radius: 0;
+	position: absolute;
+	top: 0.05em;
+	left: 0.18em;
+	background: transparent;
+	border-right: solid var(--bg) 0.08em;
+	border-bottom: solid var(--bg) 0.08em;
+	font-size: 1.8em;
+	transform: rotate(45deg);
+}
+input[type="radio"]:checked::after {
+	/* creates a colored circle for the checked radio button  */
+	content: " ";
+	width: 0.25em;
+	height: 0.25em;
+	border-radius: 100%;
+	position: absolute;
+	top: 0.125em;
+	background: var(--bg);
+	left: 0.125em;
+	font-size: 32px;
+}
+
+/* Make the textarea wider than other inputs */
+textarea {
+	width: 80%;
+}
+
+/* Makes input fields wider on smaller screens */
+@media only screen and (max-width: 720px) {
+	textarea,
+	select,
+	input {
+		width: 100%;
+	}
+}
+
+/* Ensures the checkbox and radio inputs do not have a set width like other input fields */
+input[type="checkbox"],
+input[type="radio"] {
+	width: auto;
+}
+
+/* do not show border around file selector button */
+input[type="file"] {
+	border: 0;
+}
+
+button,
+[role="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+	border: none;
+	border-radius: 5px;
+	background: var(--accent);
+	font-size: 1rem;
+	color: var(--bg);
+	padding: 0.7rem 0.9rem;
+	margin: 0.5rem 0;
+}
+
+button[disabled],
+[role="button"][aria-disabled="true"],
+input[type="submit"][disabled],
+input[type="reset"][disabled],
+input[type="button"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][disabled],
+select[disabled] {
+	cursor: default;
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+	cursor: not-allowed;
+	background-color: var(--disabled);
+}
+
+input[type="range"] {
+	padding: 0;
+}
+
+/* Set the cursor to '?' while hovering over an abbreviation */
+abbr {
+	cursor: help;
+}
+
+button:focus,
+button:enabled:hover,
+[role="button"]:focus,
+[role="button"]:not([aria-disabled="true"]):hover,
+input[type="submit"]:focus,
+input[type="submit"]:enabled:hover,
+input[type="reset"]:focus,
+input[type="reset"]:enabled:hover,
+input[type="button"]:focus,
+input[type="button"]:enabled:hover {
+	filter: brightness(1.4);
+	cursor: pointer;
+}
+
+/* Format the expanding box */
+details {
+	background: var(--accent-bg);
+	border: 1px solid var(--border);
+	border-radius: 5px;
+}
+
+summary {
+	cursor: pointer;
+	font-weight: bold;
+	padding: 0.6rem 1rem;
+}
+
+details[open] {
+	padding: 0.6rem 1rem 0.75rem 1rem;
+}
+
+details[open] summary + * {
+	margin-top: 0;
+}
+
+details[open] summary {
+	margin-bottom: 0.5rem;
+	padding: 0;
+}
+
+details[open] > *:last-child {
+	margin-bottom: 0;
+}
+
+/* Scroll bar */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #3c3e3eff #0a0d0dff;
+}
+
+::-webkit-scrollbar {
+	width: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background: #0a0d0dff;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #3c3e3eff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #616464;
 }
