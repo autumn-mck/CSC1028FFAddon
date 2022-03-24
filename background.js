@@ -45,9 +45,9 @@ async function checkHostname(hostname) {
 			hasHostnameData(data);
 		} else {
 			// Fetch the data
-			let data = await fetchExtHostnameData(hostname);
+			let data = await Promise.resolve(fetchExtHostnameData(hostname));
 			// Cache the data
-			let storage = { [hostname]: data };
+			let storage = { [hostname]: JSON.stringify(data) };
 			browser.storage.local.set(storage);
 
 			hasHostnameData(data);
@@ -59,27 +59,28 @@ async function checkHostname(hostname) {
  * Fetch the data
  */
 async function fetchExtHostnameData(hostname) {
-	let similarweb,
-		dnsLookup,
-		phishingData,
-		archiveDate,
-		subdomains,
-		stackshare = await Promise.all([
+	return new Promise((resolve) => {
+		Promise.all([
 			queryUrl(`${apiUrl}:10130/${hostname}`),
 			queryUrl(`${apiUrl}:10131/${hostname}`),
 			queryUrl(`${apiUrl}:10132/${hostname}`),
 			queryUrl(`${apiUrl}:10133/${hostname}`),
 			queryUrl(`${apiUrl}:10135/${hostname}`),
 			queryUrl(`${apiUrl}:10136/${hostname}`),
-		]);
-	return {
-		similarweb: similarweb,
-		dns: dnsLookup,
-		phishingData: phishingData,
-		archiveDate: archiveDate,
-		subdomains: subdomains,
-		stackshare: stackshare,
-	};
+		]).then((arr) => {
+			let [similarweb, dnsLookup, phishingData, archiveDate, subdomains, stackshare] = arr;
+
+			let res = {
+				similarweb: similarweb,
+				dns: dnsLookup,
+				phishingData: phishingData,
+				archiveDate: archiveDate,
+				subdomains: subdomains,
+				stackshare: stackshare,
+			};
+			resolve(res);
+		});
+	});
 }
 
 async function hasHostnameData(data) {

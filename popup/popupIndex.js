@@ -15,12 +15,13 @@ async function main() {
 	browser.storage.local.get(url.hostname).then(async function (item) {
 		let str = "";
 		if (Object.keys(item).length) {
-			let data = item[url.hostname];
+			let data = JSON.parse(item[url.hostname]);
+			console.log(data);
 			for (let key in data) {
-				console.log(key);
 				tableData(key, data[key]);
 			}
 			str = "Data found!";
+			str = JSON.stringify(data);
 		} else {
 			str = "No data found!";
 		}
@@ -38,7 +39,7 @@ async function main() {
  * @returns The result of the query
  */
 async function tableData(name, data) {
-	console.log(data);
+	//console.log(data);
 	// Add a new row at the bottom of the table
 	let tr = table.insertRow(-1);
 
