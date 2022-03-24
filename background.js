@@ -77,13 +77,13 @@ async function checkHostname(hostname) {
 async function fetchExtHostnameData(hostname) {
 	return new Promise((resolve) => {
 		Promise.all([
-			queryUrl(`${apiUrl}:10130/${hostname}`),
-			queryUrl(`${apiUrl}:10131/${hostname}`),
-			queryUrl(`${apiUrl}:10132/${hostname}`),
-			queryUrl(`${apiUrl}:10133/${hostname}`),
-			queryUrl(`${apiUrl}:10134/${hostname}`),
-			queryUrl(`${apiUrl}:10135/${hostname}`),
-			queryUrl(`${apiUrl}:10136/${hostname}`),
+			queryUrl(`${apiUrl}:10130/${hostname}`), // Phishing data
+			queryUrl(`${apiUrl}:10131/${hostname}`), // Similarweb rank
+			queryUrl(`${apiUrl}:10132/${hostname}`), // DNS lookup
+			queryUrl(`${apiUrl}:10133/${hostname}`), // Earliest archive date
+			queryUrl(`${apiUrl}:10134/${hostname}`), // Geolocation (Currently not used here, as it it supposed to accept an IP address, not a hostname)
+			queryUrl(`${apiUrl}:10135/${hostname}`), // Subdomains
+			queryUrl(`${apiUrl}:10136/${hostname}`), // Stackshare data
 		]).then((arr) => {
 			console.log(arr);
 			let [phishingData, similarweb, dnsLookup, archiveDate, geolocation, subdomains, stackshare] = arr;
@@ -93,6 +93,7 @@ async function fetchExtHostnameData(hostname) {
 				"DNS Lookup": dnsLookup,
 				"Phishing/malware data": phishingData,
 				"Earliest archive date": archiveDate,
+				//Geolocation: geolocation,
 				Subdomains: subdomains,
 				"Stackshare data": stackshare,
 			};
