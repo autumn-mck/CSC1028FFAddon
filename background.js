@@ -140,5 +140,6 @@ async function onError(error) {
 	console.log(`Error: ${error}`);
 }
 
+// Add event listeners to be able to query data as the user browses
 browser.tabs.onActivated.addListener(tabChangedListener);
 browser.tabs.onUpdated.addListener(tabUpdatedListener, { properties: ["status"] });
