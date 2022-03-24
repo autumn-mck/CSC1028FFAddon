@@ -90,15 +90,18 @@ async function hasHostnameData(data) {
  * Fetch JSON from the given URL
  */
 async function queryUrl(url) {
-	console.log(`About to request ${url}.`);
-
-	// Fetch the URL
-	let res = await fetch(url);
-	// Parse the JSON
-	let data = await res.json();
-	console.log(data);
-	// Return the data
-	return data;
+	try {
+		// Fetch the URL
+		let res = await fetch(url);
+		// Parse the JSON
+		let data = await res.json();
+		// Return the data
+		console.log(data);
+		return data;
+	} catch (ex) {
+		console.log(`ERROR: ${ex}`);
+		return null;
+	}
 }
 
 /**
