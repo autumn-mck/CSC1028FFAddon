@@ -1,12 +1,17 @@
 console.log("Popup opened!");
 let divContainer = document.getElementById("table");
 let table = document.createElement("table");
+let urlOut = document.getElementById("url");
 divContainer.appendChild(table);
 
 async function main() {
 	// Get the URL of the active tab
 	let tabs = await browser.tabs.query({ active: true, currentWindow: true });
 	let tab = tabs[0];
+	// Display the URL
+	urlOut.innerHTML = tab.url;
+
+	// Parse the URL
 	let url = tryParseUrl(tab.url);
 	console.log(tab);
 
