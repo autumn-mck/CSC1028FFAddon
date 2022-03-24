@@ -2,8 +2,8 @@ var tabUrl;
 // The URL where the API is hosted
 const apiUrl = "http://localhost";
 
+// Handle the selected tab being changed
 function tabChangedListener(activeInfo) {
-	// TODO: Does not cover switching windows? Look into how seperate windows works.
 	console.log("\n\n\nTab switched!");
 	let tabId = activeInfo.tabId;
 	// Ignore browser tabs like about:config, etc
@@ -15,6 +15,22 @@ function tabChangedListener(activeInfo) {
 	// Get the tab from its tab ID
 	let tab = browser.tabs.get(tabId);
 	tab.then(onTabSwitch, onError);
+}
+
+// Handle the user navigating between pages
+function tabUpdatedListener(tabId, changeInfo) {
+	// Only make query once page has loaded
+	if (changeInfo.status === "complete") {
+		// Ignore browser tabs like about:config, etc
+		if (tabId === browser.tabs.TAB_ID_NONE) {
+			console.log("Ignoring tab that is not browser tab!");
+			return;
+		}
+
+		// Get the tab from its tab ID
+		let tab = browser.tabs.get(tabId);
+		tab.then(onTabSwitch, onError);
+	}
 }
 
 async function onTabSwitch(tabInfo) {
@@ -124,3 +140,4 @@ async function onError(error) {
 }
 
 browser.tabs.onActivated.addListener(tabChangedListener);
+browser.tabs.onUpdated.addListener(tabUpdatedListener, { properties: ["status"] });
