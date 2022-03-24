@@ -97,7 +97,6 @@ async function queryUrl(url) {
 		// Parse the JSON
 		let data = await res.json();
 		// Return the data
-		console.log(data);
 		return data;
 	} catch (ex) {
 		console.log(`ERROR: ${ex}`);

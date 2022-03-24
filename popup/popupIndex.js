@@ -16,10 +16,12 @@ async function main() {
 		let str = "";
 		if (Object.keys(item).length) {
 			let data = JSON.parse(item[url.hostname]);
-			console.log(data);
+
+			// Display the data
 			for (let key in data) {
 				tableData(key, data[key]);
 			}
+
 			str = "Data found!";
 		} else {
 			str = "No data found!";
@@ -38,7 +40,6 @@ async function main() {
  * @returns The result of the query
  */
 async function tableData(name, data) {
-	//console.log(data);
 	// Add a new row at the bottom of the table
 	let tr = table.insertRow(-1);
 
