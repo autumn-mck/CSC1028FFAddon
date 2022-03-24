@@ -65,18 +65,20 @@ async function fetchExtHostnameData(hostname) {
 			queryUrl(`${apiUrl}:10131/${hostname}`),
 			queryUrl(`${apiUrl}:10132/${hostname}`),
 			queryUrl(`${apiUrl}:10133/${hostname}`),
+			queryUrl(`${apiUrl}:10134/${hostname}`),
 			queryUrl(`${apiUrl}:10135/${hostname}`),
 			queryUrl(`${apiUrl}:10136/${hostname}`),
 		]).then((arr) => {
-			let [similarweb, dnsLookup, phishingData, archiveDate, subdomains, stackshare] = arr;
+			console.log(arr);
+			let [phishingData, similarweb, dnsLookup, archiveDate, geolocation, subdomains, stackshare] = arr;
 
 			let res = {
-				similarweb: similarweb,
-				dns: dnsLookup,
-				phishingData: phishingData,
-				archiveDate: archiveDate,
-				subdomains: subdomains,
-				stackshare: stackshare,
+				"Similarweb rank": similarweb,
+				"DNS Lookup": dnsLookup,
+				"Phishing/malware data": phishingData,
+				"Earliest archive date": archiveDate,
+				Subdomains: subdomains,
+				"Stackshare data": stackshare,
 			};
 			resolve(res);
 		});
