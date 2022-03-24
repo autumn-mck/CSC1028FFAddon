@@ -21,7 +21,6 @@ async function main() {
 				tableData(key, data[key]);
 			}
 			str = "Data found!";
-			str = JSON.stringify(data);
 		} else {
 			str = "No data found!";
 		}
